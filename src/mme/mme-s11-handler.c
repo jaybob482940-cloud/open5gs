@@ -880,6 +880,23 @@ void mme_s11_handle_delete_session_response(
 
         return;
 
+    } else if (action == OGS_GTP_DELETE_SEND_TAU_ACCEPT) {
+
+        MME_SESS_CLEAR(sess);
+
+        GTP_COUNTER_CHECK(mme_ue, GTP_COUNTER_DELETE_SESSION_BY_TAU,
+
+            ogs_info("[%s] Send TAU accept(BCS match, active_flag=%d)",
+                     mme_ue->imsi_bcd, mme_ue->nas_eps.update.active_flag);
+            r = nas_eps_send_tau_accept(mme_ue,
+                    mme_ue->tracking_area_update_accept_proc);
+            ogs_expect(r == OGS_OK);
+            ogs_assert(r != OGS_ERROR);
+
+        );
+
+        return;
+
     } else {
         ogs_fatal("Invalid action = %d", action);
         ogs_assert_if_reached();
